@@ -31,8 +31,11 @@ ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1',
     '.railway.app',              # Tất cả subdomain của Railway
+    '.vercel.app',               # Vercel
     'nguyenducthang.id.vn',
     'www.nguyenducthang.id.vn',
+    'helialinneacy.id.vn',
+    'www.helialinneacy.id.vn',
 ]
 
 # Fix lỗi CSRF 403 Forbidden khi dùng custom domain (Django 4.0+)
@@ -41,8 +44,13 @@ CSRF_TRUSTED_ORIGINS = [
     'http://www.nguyenducthang.id.vn',
     'https://nguyenducthang.id.vn',
     'http://nguyenducthang.id.vn',
+    'https://www.helialinneacy.id.vn',
+    'http://www.helialinneacy.id.vn',
+    'https://helialinneacy.id.vn',
+    'http://helialinneacy.id.vn',
     'https://*.railway.app',
     'http://*.railway.app',
+    'https://*.vercel.app',
 ]
 
 
