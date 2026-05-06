@@ -1,4 +1,5 @@
 {% load humanize %}
+{% load static %}
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -448,10 +449,15 @@
     <!-- Main Navbar -->
     <div class="navbar-main">
         <div class="container d-flex align-items-center justify-content-between">
-            <a href="{% url 'products:product_list' %}" class="shopee-logo">
-                <i class="fa-solid fa-bag-shopping"></i>
-                <span class="fw-bold">Ba Anh Em Shop</span>
-            </a>
+            <div class="d-flex align-items-center">
+                <a href="https://ictu.edu.vn/" target="_blank" class="me-3">
+                    <img src="https://ictu.edu.vn/wp-content/uploads/2021/05/logo-ictu.png" alt="ICTU Logo" style="height: 45px; background: white; padding: 2px; border-radius: 50%;">
+                </a>
+                <a href="{% url 'products:product_list' %}" class="shopee-logo">
+                    <i class="fa-solid fa-bag-shopping"></i>
+                    <span class="fw-bold">Ba Anh Em Shop</span>
+                </a>
+            </div>
             
             <form action="{% url 'products:product_list' %}" method="get" class="search-container">
                 <input type="text" name="q" placeholder="Tìm kiếm đồ ăn vặt..." value="{{ request.GET.q }}">
