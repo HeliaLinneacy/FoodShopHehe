@@ -449,15 +449,10 @@
     <!-- Main Navbar -->
     <div class="navbar-main">
         <div class="container d-flex align-items-center justify-content-between">
-            <div class="d-flex align-items-center">
-                <a href="https://ictu.edu.vn/" target="_blank" class="me-3">
-                    <img src="https://ictu.edu.vn/wp-content/uploads/2021/05/logo-ictu.png" alt="ICTU Logo" style="height: 45px; background: white; padding: 2px; border-radius: 50%;">
-                </a>
-                <a href="{% url 'products:product_list' %}" class="shopee-logo">
-                    <i class="fa-solid fa-bag-shopping"></i>
-                    <span class="fw-bold">Ba Anh Em Shop</span>
-                </a>
-            </div>
+            <a href="{% url 'products:product_list' %}" class="shopee-logo">
+                <img src="{% static 'images/ictu_logo.png' %}" alt="ICTU" style="height: 45px; margin-right: 10px; background: white; border-radius: 50%; padding: 2px;">
+                <span class="fw-bold">Ba Anh Em Shop</span>
+            </a>
             
             <form action="{% url 'products:product_list' %}" method="get" class="search-container">
                 <input type="text" name="q" placeholder="Tìm kiếm đồ ăn vặt..." value="{{ request.GET.q }}">
@@ -466,7 +461,7 @@
             
             <div>
                 <a href="{% url 'cart:cart_detail' %}" class="cart-icon position-relative">
-                    <img src="https://ictu.edu.vn/wp-content/uploads/2021/05/logo-ictu.png" alt="ICTU" style="height: 35px; background: white; border-radius: 50%; padding: 2px;">
+                    <i class="fa-solid fa-cart-shopping"></i>
                     {% if cart_item_count and cart_item_count > 0 %}
                     <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-white text-shopee" style="font-size: 11px; padding: 3px 6px; border: 1px solid var(--shopee-red); transform: translate(-30%, 10%) !important;">
                         {{ cart_item_count }}
