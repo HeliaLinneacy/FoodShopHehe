@@ -449,10 +449,14 @@
     <!-- Main Navbar -->
     <div class="navbar-main">
         <div class="container d-flex align-items-center justify-content-between">
-            <a href="{% url 'products:product_list' %}" class="shopee-logo">
-                <img src="https://ictu.edu.vn/wp-content/uploads/2023/02/cropped-logoww.png" alt="ICTU" style="height: 45px; margin-right: 10px; background: white; border-radius: 50%; padding: 2px;">
-                <span class="fw-bold">Ba Anh Em Shop</span>
-            </a>
+            <div class="d-flex align-items-center">
+                <a href="https://ictu.edu.vn/" target="_blank">
+                    <img src="https://ictu.edu.vn/wp-content/uploads/2023/02/cropped-logoww.png" alt="ICTU" style="height: 45px; margin-right: 10px; background: white; border-radius: 50%; padding: 2px;">
+                </a>
+                <a href="{% url 'products:product_list' %}" class="shopee-logo">
+                    <span class="fw-bold">Ba Anh Em Shop</span>
+                </a>
+            </div>
             
             <form action="{% url 'products:product_list' %}" method="get" class="search-container">
                 <input type="text" name="q" placeholder="Tìm kiếm đồ ăn vặt..." value="{{ request.GET.q }}">
