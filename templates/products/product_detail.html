@@ -70,7 +70,7 @@
         </div>
 
         {% if snack.quantity > 0 %}
-        <form action="{% url 'cart:cart_add' snack.id %}" method="post">
+        <form id="add-to-cart-form" action="{% url 'cart:cart_add' snack.id %}" method="post">
             {% csrf_token %}
             
             <div class="row mb-4 align-items-center">
@@ -78,7 +78,7 @@
                 <div class="col-9 d-flex align-items-center">
                     <div class="input-group" style="width: 140px;">
                         <button class="btn btn-outline-secondary rounded-0 px-3" type="button" onclick="this.parentNode.querySelector('input[type=number]').stepDown()">-</button>
-                        <input type="number" name="quantity" class="form-control text-center rounded-0 border-secondary border-opacity-50" value="1" min="1" max="{{ snack.quantity }}" style="border-left: none; border-right: none; box-shadow: none; font-size: 16px;">
+                        <input type="number" name="quantity" id="product-quantity" class="form-control text-center rounded-0 border-secondary border-opacity-50" value="1" min="1" max="{{ snack.quantity }}" style="border-left: none; border-right: none; box-shadow: none; font-size: 16px;">
                         <button class="btn btn-outline-secondary rounded-0 px-3" type="button" onclick="this.parentNode.querySelector('input[type=number]').stepUp()">+</button>
                     </div>
                     <span class="ms-3 text-muted" style="font-size: 14px;">{{ snack.quantity }} sản phẩm có sẵn</span>
@@ -86,7 +86,7 @@
             </div>
 
             <div class="d-flex mt-4 pt-2">
-                <button type="submit" name="action" value="add_to_cart" class="btn btn-lg px-4 me-3 shopee-btn" style="color: var(--shopee-red); border: 1px solid var(--shopee-red); background: rgba(208, 1, 27, 0.08); font-size: 15px;">
+                <button type="button" id="btn-add-to-cart" class="btn btn-lg px-4 me-3 shopee-btn" style="color: var(--shopee-red); border: 1px solid var(--shopee-red); background: rgba(208, 1, 27, 0.08); font-size: 15px;">
                     <i class="fa-solid fa-cart-plus me-2"></i> Thêm Vào Giỏ Hàng
                 </button>
                 <button type="submit" name="action" value="buy_now" class="btn btn-danger btn-lg px-5 shopee-btn" style="background-color: var(--shopee-red); border: none; font-size: 15px; min-width: 140px;">
@@ -94,6 +94,77 @@
                 </button>
             </div>
         </form>
+
+        <script>
+        (function() {
+            var addBtn = document.getElementById('btn-add-to-cart');
+            var form = document.getElementById('add-to-cart-form');
+            var actionUrl = "{% url 'cart:cart_add' snack.id %}";
+            
+            addBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                var quantityInput = document.getElementById('product-quantity');
+                var quantity = quantityInput ? quantityInput.value : 1;
+                var csrfInput = form.querySelector('[name=csrfmiddlewaretoken]');
+                var csrfToken = csrfInput ? csrfInput.value : '';
+                
+                var formData = new FormData();
+                formData.append('quantity', quantity);
+                formData.append('csrfmiddlewaretoken', csrfToken);
+                
+                // Disable button temporarily
+                addBtn.disabled = true;
+                var originalHtml = '<i class="fa-solid fa-cart-plus me-2"></i> Thêm Vào Giỏ Hàng';
+                addBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin me-2"></i> Đang thêm...';
+                
+                fetch(actionUrl, {
+                    method: 'POST',
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: formData
+                })
+                .then(function(response) {
+                    if (!response.ok) {
+                        throw new Error('HTTP error ' + response.status);
+                    }
+                    return response.json();
+                })
+                .then(function(data) {
+                    if (data.login_required) {
+                        window.location.href = data.redirect_url;
+                        return;
+                    }
+                    if (data.success) {
+                        // Tăng biến đếm ở biểu tượng giỏ hàng lên 1 đơn vị
+                        var badge = document.getElementById('cart-badge');
+                        if (badge) {
+                            var currentCount = parseInt(badge.textContent.trim()) || 0;
+                            badge.textContent = currentCount + 1;
+                            badge.style.display = '';
+                        }
+                        
+                        // Hiển thị thông báo "Đã thêm vào giỏ hàng ✔"
+                        var toast = document.getElementById('cart-toast');
+                        if (toast) {
+                            toast.classList.add('show');
+                            setTimeout(function() {
+                                toast.classList.remove('show');
+                            }, 2000);
+                        }
+                    }
+                })
+                .catch(function(err) {
+                    console.error('Error adding to cart:', err);
+                    alert('Có lỗi xảy ra, vui lòng thử lại!');
+                })
+                .finally(function() {
+                    addBtn.disabled = false;
+                    addBtn.innerHTML = originalHtml;
+                });
+            });
+        })();
+        </script>
         {% else %}
         <div class="row mb-4 align-items-center">
             <div class="col-3 text-muted" style="font-size: 14px;">Số Lượng</div>

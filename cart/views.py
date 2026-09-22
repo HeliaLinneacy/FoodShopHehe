@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
+from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
 from .models import Cart, CartDetail
 from products.models import Snack
@@ -12,8 +13,16 @@ def cart_detail(request):
     cart = get_cart(request.user)
     return render(request, 'cart/cart.html', {'cart': cart})
 
-@login_required
 def cart_add(request, snack_id):
+    if not request.user.is_authenticated:
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return JsonResponse({
+                'success': False, 
+                'login_required': True, 
+                'redirect_url': f"/accounts/login/?next={request.META.get('HTTP_REFERER', '/')}"
+            })
+        return redirect(f"/accounts/login/?next={request.path}")
+
     cart = get_cart(request.user)
     snack = get_object_or_404(Snack, id=snack_id)
     quantity = int(request.POST.get('quantity', 1))
@@ -28,6 +37,12 @@ def cart_add(request, snack_id):
         cart_item.save()
         
     update_cart_total(cart)
+    
+    # AJAX request: return JSON instead of redirecting
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        cart_count = cart.items.count()
+        return JsonResponse({'success': True, 'cart_item_count': cart_count})
+    
     action = request.POST.get('action')
     if action == 'buy_now':
         return redirect('orders:checkout')

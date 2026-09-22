@@ -124,6 +124,33 @@
         /* Utility */
         a { text-decoration: none; }
 
+        /* ====== CART TOAST NOTIFICATION ====== */
+        #cart-toast {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.85);
+            background: rgba(0, 0, 0, 0.8);
+            color: #fff;
+            padding: 16px 28px;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 500;
+            z-index: 100000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            opacity: 0;
+            pointer-events: none;
+            transition: transform 0.25s ease, opacity 0.25s ease;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+        }
+        #cart-toast.show {
+            transform: translate(-50%, -50%) scale(1);
+            opacity: 1;
+        }
+
         /* ====== MIMI CHATBOT WIDGET ====== */
         #mimi-launcher {
             position: fixed;
@@ -462,11 +489,9 @@
             <div>
                 <a href="{% url 'cart:cart_detail' %}" class="cart-icon position-relative">
                     <i class="fa-solid fa-cart-shopping"></i>
-                    {% if cart_item_count and cart_item_count > 0 %}
-                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-white text-shopee" style="font-size: 11px; padding: 3px 6px; border: 1px solid var(--shopee-red); transform: translate(-30%, 10%) !important;">
-                        {{ cart_item_count }}
+                    <span id="cart-badge" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-white text-shopee" style="font-size: 11px; padding: 3px 6px; border: 1px solid var(--shopee-red); transform: translate(-30%, 10%) !important;{% if not cart_item_count or cart_item_count == 0 %} display: none;{% endif %}">
+                        {{ cart_item_count|default:"0" }}
                     </span>
-                    {% endif %}
                 </a>
             </div>
         </div>
@@ -708,5 +733,10 @@
         }
     })();
     </script>
+
+    <!-- Cart Toast Notification -->
+    <div id="cart-toast">
+        <span>Đã thêm vào giỏ hàng ✔</span>
+    </div>
 </body>
 </html>
